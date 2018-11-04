@@ -14,15 +14,16 @@
 #
 
 C        := gcc
-CFLAGS   :=
-LDFLAGS  := -I /usr/local/include -L /usr/local/lib -lavformat -lavcodec -lavutil
+CFLAGS   := -Wall -ggdb
+LDFLAGS  := $(shell pkg-config --libs libavformat libavcodec libswresample libswscale libavutil) -lm
+INCLUDES := $(shell pkg-config --cflags libavformat libavcodec libswresample libswscale libavutil)
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/apps
 TARGET   := pusher
-INCLUDE  := -Iinclude/
+INCLUDE  := -Iinclude/ 
 SRC      :=                      \
-   $(wildcard src/*.c)         \
+	    $(wildcard src/*.c)  \
 
 OBJECTS := $(SRC:%.c=$(OBJ_DIR)/%.o)
 
@@ -30,11 +31,11 @@ all: build $(APP_DIR)/$(TARGET)
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)
-	$(C) $(CFLAGS) $(INCLUDE) -o $@ -c $<
+	$(C) $(CFLAGS) $< $(INCLUDES) -c -o $@
 
 $(APP_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(C) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
+	$(C) $(CFLAGS) $< $(LDFLAGS) -o $@
 
 .PHONY: all build clean debug release
 

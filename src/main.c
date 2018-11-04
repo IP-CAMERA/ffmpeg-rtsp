@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include <libavformat/avformat.h>
+#include <stdio.h>
 #include <libavutil/mathematics.h>
+#include <libavformat/avformat.h>
 #include <libavutil/time.h>
 
 int main(int argc, char* argv[]) {
@@ -16,12 +16,12 @@ int main(int argc, char* argv[]) {
    //in_filename  = "cuc_ieschool.mov";
    //in_filename  = "cuc_ieschool.mkv";
    //in_filename  = "cuc_ieschool.ts";
-   //in_filename  = "cuc_ieschool.mp4";
+   in_filename  = "402360635.mp4";
    //in_filename  = "cuc_ieschool.h264";
-   in_filename = "cuc_ieschool.flv";//输入URL（Input file URL）
+   //in_filename = "cuc_ieschool.flv";//输入URL（Input file URL）
    //in_filename  = "shanghai03_p.h264";
 
-   out_filename = "rtmp://localhost/publishlive/livestream";//输出 URL（Output URL）[RTMP]
+   out_filename = "rtmp://192.168.1.106:10554/live/rtsp_test";//输出 URL（Output URL）[RTMP]
    //out_filename = "rtp://233.233.233.233:6666";//输出 URL（Output URL）[UDP]
 
    av_register_all();
@@ -126,10 +126,10 @@ int main(int argc, char* argv[]) {
       out_stream = ofmt_ctx->streams[pkt.stream_index];
       /* copy packet */
       //Convert PTS/DTS
-      //pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base,
-       //                          (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
-      //pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base,
-      //                           (AVRounding)(AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+      pkt.pts = av_rescale_q_rnd(pkt.pts, in_stream->time_base, out_stream->time_base,
+                                 (AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
+      pkt.dts = av_rescale_q_rnd(pkt.dts, in_stream->time_base, out_stream->time_base,
+                                 (AV_ROUND_NEAR_INF | AV_ROUND_PASS_MINMAX));
       pkt.duration = av_rescale_q(pkt.duration, in_stream->time_base, out_stream->time_base);
       pkt.pos = -1;
       //Print to Screen
